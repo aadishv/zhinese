@@ -6,19 +6,14 @@
 //
 
 import SwiftUI
+import Foundation
 
 struct ContentView: View {
+    @State var set: TermSet = [Term(english: "you", pinyin: Pinyin("ni3"), character: "你")]
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+
+        TermSetEditor(set: $set)
     }
 }
 
-#Preview {
-    ContentView()
-}
+
