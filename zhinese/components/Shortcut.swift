@@ -51,12 +51,17 @@ struct Shortcut: View {
     var body: some View {
         HStack {
             ForEach(generateLetters(), id: \.self) { letter in
+                Text("\(letter)")
+                    .font(.headline)
+                    .background {
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color.gray.opacity(0.5))
+                            .frame(width: 30, height: 30)
+                    }
+                    .frame(width: 30, height: 30)
                 
-                Text(letter).font(.headline).padding(5.0).background {
-                    RoundedRectangle(cornerRadius: 5).fill(Color.accentColor)
-                }
             }
-        }.padding()
+        }
     }
 }
 

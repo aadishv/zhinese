@@ -12,6 +12,7 @@ struct zhineseApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .modelContainer(for: Term.self)
         }
     }
 }

@@ -6,35 +6,52 @@
 //
 import Foundation
 import SwiftUI
+import SwiftData
 
-extension Term: View {
-    public var body: some View {
-        HStack {
-            Text(character)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Text(try! pinyin.render())
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Text(english)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Spacer()
-        }.padding(4).font(.largeTitle)
-    }
-}
 struct HomeView: View {
-    @Binding var set: TermSet
+//    @Query var set: TermSet
+    let set: TermSet = [Term(english: "you", pinyin: Pinyin("ni3"), character: "你")]
+    
+    @Environment(\.modelContext) private var context
+    
+    @State private var selected: Term? = nil
     var body: some View {
         
         VStack {
-            ForEach(set.indices, id: \.self) { i in
-                set[i]
+            List(set, id: \.self, selection: $selected) { i in
+                HStack {
+                    Text(i.character)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Text(try! i.pinyin.render())
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Text(i.english)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Spacer()
+                }
+                .padding(4)
+                .font(.headline)
+                .contextMenu {
+                    Button("Edit") {
+                        print("Test")
+                    }.keyboardShortcut(KeyboardShortcut(.return, modifiers: [.command, .shift]))
+                }
             }
+        }.onAppear {
+            context.insert(
+                Term(
+                    english: "you",
+                    pinyin: Pinyin("ni3"),
+                    character: "你")
+            )
+            
+            print(set)
         }
     }
 }
 private struct PreviewView: View {
-    @State var set: TermSet = [Term(english: "you", pinyin: Pinyin("ni3"), character: "你")]
+    @State var set: TermSet = .init([Term(english: "you", pinyin: Pinyin("ni3"), character: "你")])
     var body: some View {
-        HomeView(set: $set)
+        HomeView()
     }
 }
 #Preview {
