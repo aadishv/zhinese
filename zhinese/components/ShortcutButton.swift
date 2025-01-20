@@ -31,11 +31,19 @@ struct ShortcutButton<T: View>: View {
     }
 
     var body: some View {
-        Button(action: handleButtonPress) {
+        Button(action: action) {
             buttonContent
         }
+        .simultaneousGesture(
+            TapGesture()
+                .onEnded({ _ in
+                    pressed = 1
+                })
+        )
         .buttonStyle(.borderless)
         .keyboardShortcut(shortcut)
+        .frame(height: 200)
+        
     }
 
     private var buttonContent: some View {
@@ -53,37 +61,27 @@ struct ShortcutButton<T: View>: View {
             buttonBackground
         }
         .onHover { hovering in
-            withAnimation {
+            withAnimation(.easeInOut(duration: 0.25)) {
                 self.hovering = hovering
             }
         }
     }
-
+    private var bottomColor: Color {
+        return buttonPrimary.mix(with: Color.black, by: 0.3)
+    }
     private var buttonBackground: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 8)
-                .fill(Color.gray)
+                .fill(bottomColor)
                 .offset(y: 3)
 
             ZStack {
                 RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.gray, lineWidth: 3)
+                    .fill(bottomColor)
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(self.buttonPrimary.opacity(hovering ? 0.6 : 0.8))
+                    .fill(self.buttonPrimary.opacity(hovering ? 0.5 : 0.8))
             }
             .offset(y: pressed > 0 ? 5 : 0)
-        }
-    }
-
-    private func handleButtonPress() {
-        action()
-        withAnimation {
-            pressed += 1
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            withAnimation {
-                pressed -= 1
-            }
         }
     }
 }
